@@ -6,18 +6,20 @@ import java.util.Optional;
 
 /**
  * Serviço responsável pela autenticação e registro de usuários (Pessoas).
- * ATENÇÃO: Esta implementação é uma SIMULAÇÃO para fins didáticos.
- * Em um sistema de produção, utilize mecanismos seguros de hashing e salting
- * para senhas e persista os dados em um banco de dados real.
  */
 public class AutenticacaoServico {
 
     private static final List<Pessoa> usuariosRegistrados = new ArrayList<>();
 
     static {
-        Pessoa admin = new Pessoa("Admin FIAP", "Sede FIAP", "admin@fiap.com.br", "admin123", -23.5739, -46.6960, "administrador");
+        Pessoa admin = new Pessoa("Admin FIAP", "Sede FIAP", "Zona Central", "admin@fiap.com.br", "admin123", "administrador");
+        admin.setLatitude(-23.5739);
+        admin.setLongitude(-46.6960);
         usuariosRegistrados.add(admin);
-        Pessoa usuarioTeste = new Pessoa("Danilo Wendler", "Rua Teste, 123", "danilo@fiap.com.br", "senha123", -23.5500, -46.6300, "morador");
+
+        Pessoa usuarioTeste = new Pessoa("Danilo Wendler", "Rua Teste, 123", "Zona Sul", "danilo@fiap.com.br", "senha123", "morador");
+        usuarioTeste.setLatitude(-23.5500);
+        usuarioTeste.setLongitude(-46.6300);
         usuariosRegistrados.add(usuarioTeste);
     }
 
@@ -35,6 +37,7 @@ public class AutenticacaoServico {
             return Optional.empty();
         }
         for (Pessoa p : usuariosRegistrados) {
+            // Em um sistema real: comparar hash da senha fornecida + sal com o hash armazenado
             if (loginIdentificador.equalsIgnoreCase(p.getLoginIdentificador()) && senha.equals(p.getSenha())) {
                 System.out.println("Login bem-sucedido para: " + p.getNome());
                 return Optional.of(p);
@@ -47,20 +50,24 @@ public class AutenticacaoServico {
     /**
      * Registra um novo usuário (Pessoa) no sistema.
      * Verifica se o identificador de login já está em uso antes de registrar.
-     * ATENÇÃO: A senha é armazenada em texto puro nesta simulação.
+     * A senha é armazenada em texto puro nesta simulação.
      *
      * @param loginIdentificador O identificador de login (username/email) para o novo usuário.
      * @param senha A senha para o novo usuário.
      * @param nome O nome completo da pessoa.
      * @param localizacaoDescritiva A localização descritiva da pessoa.
-     * @param latitude A latitude geográfica da pessoa.
-     * @param longitude A longitude geográfica da pessoa.
+     * @param zona A zona da cidade onde a pessoa se encontra.
+     * @param latitude A latitude geográfica da pessoa (opcional, pode ser 0.0).
+     * @param longitude A longitude geográfica da pessoa (opcional, pode ser 0.0).
      * @param tipoUsuario O tipo de usuário (ex: "morador").
-     * @return {@code true} se o registro for bem-sucedido, {@code false} se o identificador de login já existir.
+     * @return {@code true} se o registro for bem-sucedido, {@code false} se o identificador de login já existir ou dados essenciais estiverem faltando.
      */
-    public boolean registrar(String loginIdentificador, String senha, String nome, String localizacaoDescritiva, double latitude, double longitude, String tipoUsuario) {
-        if (loginIdentificador == null || loginIdentificador.trim().isEmpty() || senha == null || senha.trim().isEmpty()) {
-            System.out.println("Registro falhou: Login e senha não podem ser vazios.");
+    public boolean registrar(String loginIdentificador, String senha, String nome, String localizacaoDescritiva, String zona, double latitude, double longitude, String tipoUsuario) {
+        if (loginIdentificador == null || loginIdentificador.trim().isEmpty() ||
+                senha == null || senha.trim().isEmpty() ||
+                nome == null || nome.trim().isEmpty() ||
+                zona == null || zona.trim().isEmpty()) {
+            System.out.println("Registro falhou: Login, senha, nome e zona não podem ser vazios.");
             return false;
         }
 
@@ -71,20 +78,12 @@ public class AutenticacaoServico {
             }
         }
 
-        Pessoa novaPessoa = new Pessoa(nome, localizacaoDescritiva, loginIdentificador, senha, latitude, longitude, tipoUsuario);
+        Pessoa novaPessoa = new Pessoa(nome, localizacaoDescritiva, zona, loginIdentificador, senha, tipoUsuario);
+        novaPessoa.setLatitude(latitude);
+        novaPessoa.setLongitude(longitude);
         usuariosRegistrados.add(novaPessoa);
         System.out.println("Usuário '" + loginIdentificador + "' registrado com sucesso!");
         return true;
     }
 
-    /**
-     * Método para simular a adição de um usuário (para testes).
-     * @param pessoa A pessoa a ser adicionada.
-     */
-    public static void adicionarUsuarioParaTeste(Pessoa pessoa) {
-        if(pessoa != null && pessoa.getLoginIdentificador() != null &&
-                !usuariosRegistrados.stream().anyMatch(u -> u.getLoginIdentificador().equalsIgnoreCase(pessoa.getLoginIdentificador()))) {
-            usuariosRegistrados.add(pessoa);
-        }
-    }
 }

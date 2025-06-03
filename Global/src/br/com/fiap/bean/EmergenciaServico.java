@@ -1,8 +1,8 @@
 package br.com.fiap.bean;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 
 /**
  * Serviço responsável por orquestrar ações de emergência, como
@@ -27,7 +27,6 @@ public class EmergenciaServico {
 
     /**
      * Exibe na console a lista de recursos genéricos atualmente disponíveis.
-     * Se não houver recursos, uma mensagem informativa é exibida.
      */
     public void mostrarRecursosGeraisDisponiveis() {
         List<Recurso> recursos = recursoRepository.listarDisponiveis();
@@ -41,7 +40,6 @@ public class EmergenciaServico {
 
     /**
      * Exibe na console a lista de abrigos atualmente com vagas.
-     * Se não houver abrigos com vagas, uma mensagem informativa é exibida.
      */
     public void mostrarAbrigosComVagas() {
         List<Abrigo> abrigos = abrigoRepository.listarComVagas();
@@ -53,15 +51,30 @@ public class EmergenciaServico {
         }
     }
 
+    /**
+     * Lista os abrigos disponíveis (com vagas) em uma determinada zona.
+     *
+     * @param zonaUsuario A zona informada pelo usuário.
+     * @return Uma lista de objetos {@link Abrigo} disponíveis na zona,
+     * ou uma lista vazia se nenhum for encontrado ou a zona for inválida.
+     */
+    public List<Abrigo> listarAbrigosDisponiveisPorZona(String zonaUsuario) {
+        if (zonaUsuario == null || zonaUsuario.trim().isEmpty()){
+            System.out.println("⚠️ Zona não informada para busca de abrigos.");
+            return new ArrayList<>();
+        }
+        return abrigoRepository.listarComVagasPorZona(zonaUsuario);
+    }
 
     /**
-     * Encontra e retorna o abrigo com vagas mais próximo da localização fornecida.
+     * Encontra e retorna o abrigo com vagas mais próximo da localização geográfica fornecida.
+     * Este metodo pode ser usado internamente ou se a lat/lon do usuário for conhecida.
      *
      * @param userLatitude  Latitude atual do usuário.
      * @param userLongitude Longitude atual do usuário.
      * @return O objeto {@link Abrigo} mais próximo com vagas, ou {@code null} se nenhum for encontrado.
      */
-    public Abrigo encontrarAbrigoMaisProximoDisponivel(double userLatitude, double userLongitude) {
+    public Abrigo encontrarAbrigoMaisProximoDisponivelPorCoordenadas(double userLatitude, double userLongitude) {
         List<Abrigo> abrigosComVagas = abrigoRepository.listarComVagas();
 
         if (abrigosComVagas.isEmpty()) {
@@ -77,7 +90,6 @@ public class EmergenciaServico {
 
     /**
      * Exibe uma mensagem de apoio emocional aleatória na console.
-     * Utiliza la clase {@link MensagemDeApoio} para generar el mensaje.
      */
     public void oferecerMensagemDeApoio() {
         System.out.println("💙 Mensagem de Apoio: " + MensagemDeApoio.gerarMensagem());
@@ -85,7 +97,6 @@ public class EmergenciaServico {
 
     /**
      * Conta o número total de recursos genéricos disponíveis.
-     *
      * @return O número inteiro de recursos genéricos disponíveis.
      */
     public int contarRecursosGeraisDisponiveis() {
@@ -94,7 +105,6 @@ public class EmergenciaServico {
 
     /**
      * Conta o número total de abrigos com vagas.
-     *
      * @return O número inteiro de abrigos com vagas.
      */
     public int contarAbrigosComVagas() {
@@ -120,15 +130,19 @@ public class EmergenciaServico {
      * Gera uma mensagem de alerta personalizada para uma pessoa específica.
      *
      * @param pessoa A {@link Pessoa} para a qual o alerta será gerado.
-     * @return Uma {@code String} contendo a mensagem de alerta formatada com o nome
-     * e localização descritiva da pessoa.
+     * @return Uma {@code String} contendo a mensagem de alerta formatada.
      */
     public String gerarAlertaParaPessoa(Pessoa pessoa) {
         if (pessoa == null) {
             return "🚨 Alerta: Pessoa não identificada.";
         }
+        String localInfo = pessoa.getLocalizacaoDescritiva();
+        if (pessoa.getZona() != null && !pessoa.getZona().isEmpty()) {
+            localInfo += " (Zona: " + pessoa.getZona() + ")";
+        }
+
         return "🚨 ALERTA URGENTE para " + pessoa.getNome() +
-                " em/próximo a '" + pessoa.getLocalizacaoDescritiva() +
+                " em/próximo a '" + localInfo +
                 "'. Procure informações oficiais e siga as orientações de segurança!";
     }
 }

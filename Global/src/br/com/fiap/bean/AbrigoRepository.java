@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  * Repositório em memória responsável por armazenar e gerenciar uma coleção
  * de objetos {@link Abrigo}.
- * Permite adicionar novos abrigos e listar aqueles que possuem vagas.
+ * Permite adicionar novos abrigos e listar aqueles que possuem vagas, opcionalmente filtrando por zona.
  */
 public class AbrigoRepository {
 
@@ -37,11 +37,20 @@ public class AbrigoRepository {
     }
 
     /**
-     * Lista todos os abrigos cadastrados, independentemente da disponibilidade de vagas.
+     * Lista todos os abrigos que possuem vagas disponíveis em uma determinada zona.
+     * A comparação da zona é case-insensitive.
      *
-     * @return Uma {@code List<Abrigo>} contendo todos os abrigos.
+     * @param zona A zona para filtrar os abrigos (ex: "Zona Sul").
+     * @return Uma {@code List<Abrigo>} contendo os abrigos com vagas na zona especificada.
+     * Retorna uma lista vazia se a zona for nula, vazia ou se nenhum abrigo atender aos critérios.
      */
-    public List<Abrigo> listarTodos() {
-        return new ArrayList<>(abrigos); // Retorna uma cópia
+    public List<Abrigo> listarComVagasPorZona(String zona) {
+        if (zona == null || zona.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return abrigos.stream()
+                .filter(abrigo -> abrigo.temVagas() && zona.equalsIgnoreCase(abrigo.getZonaDoAbrigo()))
+                .collect(Collectors.toList());
     }
+
 }

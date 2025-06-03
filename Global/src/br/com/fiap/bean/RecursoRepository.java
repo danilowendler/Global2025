@@ -37,12 +37,4 @@ public class RecursoRepository {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Lista todos os recursos genéricos cadastrados, independentemente da disponibilidade.
-     *
-     * @return Uma {@code List<Recurso>} contendo todos os recursos.
-     */
-    public List<Recurso> listarTodos() {
-        return new ArrayList<>(recursos);
-    }
 }

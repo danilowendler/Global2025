@@ -9,12 +9,12 @@ import java.time.LocalDate;
  * prioridade e data de disponibilização. Para abrigos, veja a classe {@link Abrigo}.
  */
 public class Recurso {
-    private String tipo;
-    private String localDescritivo;
-    private boolean disponivel;
+    private final String tipo;
+    private final String localDescritivo;
+    private final boolean disponivel;
     private int quantidade;
     private int prioridade;
-    private LocalDate dataDisponibilizacao;
+    private final LocalDate dataDisponibilizacao;
 
     /**
      * Constrói uma nova instância de Recurso.
@@ -44,13 +44,6 @@ public class Recurso {
         return tipo;
     }
 
-    /**
-     * Retorna o local descritivo onde o recurso está disponível.
-     * @return O local descritivo do recurso.
-     */
-    public String getLocalDescritivo() {
-        return localDescritivo;
-    }
 
     /**
      * Verifica se o recurso está disponível.
@@ -60,21 +53,6 @@ public class Recurso {
         return disponivel;
     }
 
-    /**
-     * Define a disponibilidade do recurso.
-     * @param disponivel O novo estado de disponibilidade.
-     */
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
-    }
-
-    /**
-     * Retorna a quantidade disponível do recurso.
-     * @return A quantidade do recurso.
-     */
-    public int getQuantidade() {
-        return quantidade;
-    }
 
     /**
      * Define a quantidade do recurso.
@@ -86,13 +64,6 @@ public class Recurso {
         }
     }
 
-    /**
-     * Retorna o nível de prioridade do recurso.
-     * @return O nível de prioridade.
-     */
-    public int getPrioridade() {
-        return prioridade;
-    }
 
     /**
      * Define o nível de prioridade do recurso.
@@ -102,13 +73,6 @@ public class Recurso {
         this.prioridade = prioridade;
     }
 
-    /**
-     * Retorna a data em que o recurso foi disponibilizado.
-     * @return A data de disponibilização.
-     */
-    public LocalDate getDataDisponibilizacao() {
-        return dataDisponibilizacao;
-    }
 
     /**
      * Retorna uma representação em String do objeto Recurso.
@@ -123,21 +87,4 @@ public class Recurso {
                 " | Desde: " + dataDisponibilizacao;
     }
 
-    /**
-     * Verifica a disponibilidade primária do recurso.
-     * @return {@code true} se o recurso está marcado como disponível, {@code false} caso contrário.
-     */
-    public boolean verificarDisponibilidade() {
-        return isDisponivel();
-    }
-
-    /**
-     * Verifica a disponibilidade do recurso, com a opção de incluir recursos inativos na verificação.
-     * @param incluirInativos Se {@code true}, retorna {@code true} (considera disponível para essa lógica).
-     * Se {@code false}, retorna o status real de disponibilidade.
-     * @return {@code true} se o recurso deve ser considerado disponível com base no parâmetro.
-     */
-    public boolean verificarDisponibilidade(boolean incluirInativos) {
-        return incluirInativos || isDisponivel();
-    }
 }
