@@ -16,7 +16,6 @@ public class CalculadoraDistancia {
     /**
      * Calcula a distância em linha reta (aproximada) entre dois pontos geográficos
      * (latitude/longitude) usando a fórmula de Haversine.
-     *
      * @param lat1 Latitude do primeiro ponto, em graus decimais.
      * @param lon1 Longitude do primeiro ponto, em graus decimais.
      * @param lat2 Latitude do segundo ponto, em graus decimais.

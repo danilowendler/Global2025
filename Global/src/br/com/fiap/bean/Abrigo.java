@@ -12,12 +12,11 @@ public class Abrigo {
     private final int capacidadeTotal;
     private int vagasDisponiveis;
     private final String enderecoCompleto;
-    private final String contatoResponsavel; // Opcional
-    private final String zonaDoAbrigo; // Ex: "Zona Sul", "Zona Leste"
+    private final String contatoResponsavel;
+    private final String zonaDoAbrigo;
 
     /**
      * Constrói uma nova instância de Abrigo.
-     *
      * @param nomeAbrigo O nome do abrigo.
      * @param latitude A latitude geográfica do abrigo.
      * @param longitude A longitude geográfica do abrigo.
@@ -32,14 +31,40 @@ public class Abrigo {
         this.latitude = latitude;
         this.longitude = longitude;
         this.capacidadeTotal = capacidadeTotal;
-        this.setVagasDisponiveis(vagasDisponiveis); // Usa o setter para validação
+        this.setVagasDisponiveis(vagasDisponiveis);
         this.enderecoCompleto = enderecoCompleto;
         this.contatoResponsavel = contatoResponsavel;
         this.zonaDoAbrigo = zonaDoAbrigo;
     }
 
-    // Getters
+    // --- MÉTODOS QUE O ABRIGOREPOSITORY USA ---
 
+    /**
+     * Retorna o nome do abrigo.
+     * @return O nome do abrigo.
+     */
+    public String getNomeAbrigo() {
+        return nomeAbrigo;
+    }
+
+    /**
+     * Verifica se ainda existem vagas disponíveis no abrigo.
+     * @return {@code true} se {@code vagasDisponiveis > 0}, {@code false} caso contrário.
+     */
+    public boolean temVagas() {
+        return this.vagasDisponiveis > 0;
+    }
+
+    /**
+     * Retorna a zona onde o abrigo está localizado.
+     * @return A zona do abrigo.
+     */
+    public String getZonaDoAbrigo() {
+        return zonaDoAbrigo;
+    }
+
+
+    // --- OUTROS GETTERS E SETTERS ---
 
     /**
      * Retorna a latitude geográfica do abrigo.
@@ -52,17 +77,6 @@ public class Abrigo {
      * @return A longitude.
      */
     public double getLongitude() { return longitude; }
-
-
-    /**
-     * Retorna a zona onde o abrigo está localizado.
-     * @return A zona do abrigo.
-     */
-    public String getZonaDoAbrigo() {
-        return zonaDoAbrigo;
-    }
-
-    // Setters
 
     /**
      * Define o número de vagas disponíveis.
@@ -77,20 +91,9 @@ public class Abrigo {
 
 
     /**
-     * Verifica se ainda existem vagas disponíveis no abrigo.
-     * @return {@code true} se {@code vagasDisponiveis > 0}, {@code false} caso contrário.
-     */
-    public boolean temVagas() {
-        return this.vagasDisponiveis > 0;
-    }
-
-
-
-    /**
      * Retorna uma representação em String do objeto Abrigo.
      * @return Uma {@code String} formatada com os dados do abrigo.
      */
-    @Override
     public String toString() {
         return "🏠 Abrigo: " + nomeAbrigo +
                 " | Endereço: " + enderecoCompleto + " (Zona: " + zonaDoAbrigo + ")" +

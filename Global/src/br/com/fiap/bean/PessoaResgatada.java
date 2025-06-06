@@ -1,6 +1,5 @@
 package br.com.fiap.bean;
 
-
 /**
  * Representa uma pessoa que já foi resgatada em uma situação de emergência.
  * Herda da classe {@link Pessoa}. O campo {@code statusResgate} desta classe
@@ -13,9 +12,9 @@ public class PessoaResgatada extends Pessoa {
      * Constrói uma nova instância de PessoaResgatada.
      *
      * @param nome O nome completo da pessoa resgatada.
-     * @param localizacaoDescritiva A localização de onde a pessoa foi resgatada ou sua localização atual.
+     * @param localizacaoDescritiva A localização de onde a pessoa foi resgatada.
      * @param zona A zona da cidade onde a pessoa se encontrava ou foi resgatada.
-     * @param statusResgate O status da pessoa após o resgate (ex: "Em abrigo seguro", "Hospitalizada").
+     * @param statusResgate O status da pessoa após o resgate.
      */
     public PessoaResgatada(String nome, String localizacaoDescritiva, String zona, String statusResgate) {
         super(nome, localizacaoDescritiva, zona);
@@ -24,15 +23,13 @@ public class PessoaResgatada extends Pessoa {
     }
 
 
+
     /**
-     * Retorna uma representação em String do objeto PessoaResgatada,
-     * indicando que a pessoa foi resgatada e incluindo seu nome, localização (com zona),
-     * o status geral da superclasse e o status específico do resgate.
-     * Este metodo sobrescreve o metodo {@code toString} da classe {@link Pessoa}.
+     * Retorna uma representação em String do objeto PessoaResgatada.
+     * Este método sobrescreve o método {@code toString} da classe {@link Pessoa}.
      *
      * @return Uma {@code String} formatada com os dados da pessoa resgatada.
      */
-    @Override
     public String toString() {
         String zonaInfo = "";
         if (getZona() != null && !getZona().isEmpty()) {

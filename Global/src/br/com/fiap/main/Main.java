@@ -1,14 +1,15 @@
 package br.com.fiap.main;
 
 import br.com.fiap.bean.*;
-import java.util.List;
-import java.util.Optional;
+
 import java.util.Scanner;
 
 /**
  * Classe principal da aplicação de emergência para queimadas.
  * Apresenta um menu interativo no console para que o usuário possa interagir
- * com as funcionalidades do sistema.
+ * com as funcionalidades do sistema, como login, registro, busca por abrigos
+ * próximos, visualização de recursos e recebimento de mensagens de apoio.
+ * Esta versão foi refatorada para utilizar arrays e conceitos fundamentais de Java.
  */
 public class Main {
 
@@ -16,7 +17,6 @@ public class Main {
     private static final AutenticacaoServico authServico = new AutenticacaoServico();
     private static EmergenciaServico emergenciaServico;
     private static Pessoa pessoaLogada = null;
-
     private static final RecursoRepository recursoRepoGlobal = new RecursoRepository();
     private static final AbrigoRepository abrigoRepoGlobal = new AbrigoRepository();
 
@@ -54,7 +54,6 @@ public class Main {
         recursoRepoGlobal.adicionar(kitHigiene);
         recursoRepoGlobal.adicionar(new Recurso("Cobertor", "Ginásio Municipal", false));
 
-        //ZONAS
         abrigoRepoGlobal.adicionar(new Abrigo("Abrigo Paz Eterna", -23.550520, -46.633303, 100, 75, "Rua da Consolação, 900, São Paulo", "João Silva - (11) 98765-4321", "Zona Central"));
         abrigoRepoGlobal.adicionar(new Abrigo("Escola Segura ABC", -23.561398, -46.656356, 150, 15, "Av. Paulista, 1500, São Paulo", "Maria Oliveira - (11) 91234-5678", "Zona Central"));
         abrigoRepoGlobal.adicionar(new Abrigo("Centro Comunitário Esperança Leste", -23.547500, -46.573610, 80, 0, "Rua das Palmeiras, 30, Zona Leste", "Carlos Souza - (11) 99999-0000", "Zona Leste"));
@@ -120,9 +119,9 @@ public class Main {
             return;
         }
 
-        List<Abrigo> abrigosNaZona = emergenciaServico.listarAbrigosDisponiveisPorZona(zonaUsuario);
+        Abrigo[] abrigosNaZona = emergenciaServico.listarAbrigosDisponiveisPorZona(zonaUsuario);
 
-        if (!abrigosNaZona.isEmpty()) {
+        if (abrigosNaZona.length > 0) {
             System.out.println("\n✅ Abrigos com vagas encontrados na " + zonaUsuario + ":");
             for (Abrigo abrigo : abrigosNaZona) {
                 System.out.println("----------------------------------------");
@@ -139,7 +138,7 @@ public class Main {
     }
 
     /**
-     * Processa o login do usuário.
+     * Processa o login do usuário, agora esperando um objeto Pessoa ou null.
      */
     private static void fazerLogin() {
         System.out.println("\n--- 🔑 LOGIN ---");
@@ -148,12 +147,10 @@ public class Main {
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
 
-        Optional<Pessoa> pessoaOpt = authServico.login(identificador, senha);
-        if (pessoaOpt.isPresent()) {
-            pessoaLogada = pessoaOpt.get();
+        pessoaLogada = authServico.login(identificador, senha);
+
+        if (pessoaLogada != null) {
             System.out.println("Bem-vindo(a) de volta, " + pessoaLogada.getNome() + "!");
-        } else {
-            pessoaLogada = null;
         }
     }
 
@@ -209,7 +206,7 @@ public class Main {
         if (sucesso) {
             System.out.println("Registro concluído! Agora você pode fazer login.");
         } else {
-            System.out.println("Não foi possível completar o registro (verifique se o email já existe ou se os dados são válidos).");
+            System.out.println("Não foi possível completar o registro. Verifique os dados ou tente outro email.");
         }
     }
 
@@ -241,10 +238,12 @@ public class Main {
             switch (opcaoLogado) {
                 case 1:
                     if (pessoaLogada.getZona() != null && !pessoaLogada.getZona().isEmpty()) {
-                        List<Abrigo> abrigos = emergenciaServico.listarAbrigosDisponiveisPorZona(pessoaLogada.getZona());
-                        if (!abrigos.isEmpty()) {
+                        Abrigo[] abrigos = emergenciaServico.listarAbrigosDisponiveisPorZona(pessoaLogada.getZona());
+                        if (abrigos.length > 0) {
                             System.out.println("\n✅ Abrigos com vagas encontrados na sua zona (" + pessoaLogada.getZona() + "):");
-                            abrigos.forEach(System.out::println);
+                            for(Abrigo abrigo : abrigos) {
+                                System.out.println(abrigo);
+                            }
                         } else {
                             System.out.println("\n❌ Nenhum abrigo com vagas encontrado na sua zona (" + pessoaLogada.getZona() + ").");
                         }
@@ -266,7 +265,6 @@ public class Main {
                     } else {
                         System.out.println("❌ Sua localização precisa (latitude/longitude) não está cadastrada.");
                         System.out.println("   Para usar esta função, sua Lat/Lon precisa ser informada (ex: durante o registro ou uma futura atualização de perfil).");
-                        System.out.println("   Você pode usar a busca por Zona (opção 1 deste menu ou no menu inicial).");
                     }
                     break;
                 case 3:
@@ -368,6 +366,7 @@ public class Main {
             }
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
+            System.out.println("‼️ ERRO: Entrada inválida. Por favor, digite um número.");
             return -99;
         }
     }
